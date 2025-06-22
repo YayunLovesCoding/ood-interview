@@ -1,0 +1,28 @@
+@startuml
+skinparam monochrome true
+skinparam backgroundColor #FFFFFF
+skinparam classBackgroundColor #FFFFFF
+skinparam dpi 300
+
+[*] --> IdleState : Start
+
+IdleState --> PinEntryState : insertCard
+IdleState --> IdleState : invalidCard
+IdleState --> IdleState : ejectCard
+
+PinEntryState --> TransactionSelectionState : correct
+PinEntryState --> IdleState : ejectCard
+PinEntryState --> PinEntryState : incorrect
+
+TransactionSelectionState --> WithdrawAmountEntryState : withdrawRequest
+WithdrawAmountEntryState --> TransactionSelectionState : continue
+WithdrawAmountEntryState --> IdleState : Amount/ejectCard
+
+TransactionSelectionState --> DepositCollectionState : depositRequest
+
+DepositCollectionState --> TransactionSelectionState : continue
+DepositCollectionState --> IdleState : Amount/ejectCard
+
+TransactionSelectionState --> IdleState : ejectCard
+
+@enduml

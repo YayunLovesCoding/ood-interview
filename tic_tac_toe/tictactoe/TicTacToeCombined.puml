@@ -1,0 +1,61 @@
+@startuml
+skinparam monochrome true
+skinparam backgroundColor #FFFFFF
+skinparam classBackgroundColor #FFFFFF
+skinparam dpi 300
+
+enum GameCondition {
+    IN_PROGRESS
+    ENDED
+}
+
+class Game {
+    -Board board
+    -ScoreTracker scoreTracker
+    -Player[] players
+    -int currentPlayerIndex
+    +startNewGame(Player, Player)
+    +makeMove(int, int, Player)
+    +GameCondition getGameStatus()
+    +Player getCurrentPlayer()
+    +ScoreTracker getScoreTracker()
+}
+
+class Board {
+    - Player[][] grid
+    + updateBoard(int colIndex, int rowIndex, Player player)
+    + Optional<Player> getWinner()
+    + boolean isFull()
+    + void reset()
+    + Player getPlayerAt(int colIndex, int rowIndex)
+}
+
+class ScoreTracker{
+    - HashMap<Player, Integer> playerRatings
+    + void reportGameResult(Player player1, Player player2, Optional<Player> winningPlayer)
+    + Map<Player, Integer> getTopPlayers()
++ int getRank(Player player)
+}
+
+class Move {
+    -int rowIndex
+    -int colIndex
+    -player: Player
+}
+
+class Player {
+    -name: String
+    -symbol: char
+}
+
+' Relationships
+
+Game *-- Board
+Game *-- ScoreTracker
+Game --> Player
+Game --> Move
+Board --> Player
+Move --> Player
+ScoreTracker --> Player
+
+@enduml

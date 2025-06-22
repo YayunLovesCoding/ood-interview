@@ -1,0 +1,27 @@
+rootProject.name = 'oo-design'
+
+// Include all project modules mapped to actual directories
+include 'atm'
+include 'blackjack'
+include 'elevator'
+include 'filesearch'
+include 'grocerystore'
+include 'movieticket'
+include 'parkinglot'
+include 'restaurant'
+include 'shippinglocker'
+include 'tictactoe'
+include 'vendingmachine'
+
+// Map to actual directories
+project(':atm').projectDir = file('atm')
+project(':blackjack').projectDir = file('blackjack')
+project(':elevator').projectDir = file('elevator_system')
+project(':filesearch').projectDir = file('file_search')
+project(':grocerystore').projectDir = file('grocery_store')
+project(':movieticket').projectDir = file('movie_ticket')
+project(':parkinglot').projectDir = file('parking_lot')
+project(':restaurant').projectDir = file('restaurant')
+project(':shippinglocker').projectDir = file('shipping_locker')
+project(':tictactoe').projectDir = file('tic_tac_toe')
+project(':vendingmachine').projectDir = file('vending_machine')

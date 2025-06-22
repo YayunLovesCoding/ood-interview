@@ -1,0 +1,104 @@
+@startuml
+skinparam monochrome true
+skinparam backgroundColor #FFFFFF
+skinparam classBackgroundColor #FFFFFF
+skinparam dpi 200
+
+class Catalog {
+    - Map<String, Item> items
+    + void updateItem(Item item)
+    + void removeItem(Item item)
+    + Item getItem(String barcode)
+}
+
+class Inventory {
+    - Map<String, Integer> stock
+    + void addStock(String barcode, int count)
+    + void reduceStock(String barcode, int count)
+    + int getStock(String barcode)
+}
+
+class Item {
+    - String name
+    - String barcode
+    - String category
+    - BigDecimal price
+}
+
+interface DiscountCriteria {
+    + boolean isApplicable(Item item)
+}
+
+interface DiscountCalculationStrategy {
+    + BigDecimal calculateDiscountedPrice(BigDecimal originalPrice)
+}
+
+class DiscountCampaign {
+    - String discountId
+    - String name
+    - DiscountCriteria criteria
+    - DiscountCalculationStrategy calculationStrategy
+    + boolean isApplicable(Item item)
+    + BigDecimal calculateDiscount(OrderItem item)
+}
+
+class Checkout {
+    - Order currentOrder
+    - List<DiscountCampaign> activeDiscounts
+    + void startNewOrder()
+    + void addItemToOrder(Item item, int quantity)
+    + BigDecimal getOrderTotal()
+    + BigDecimal processPayment(BigDecimal paymentAmount)
+    + Receipt getReceipt()
+}
+
+class GroceryStoreSystem {
+    - Catalog catalog
+    - Inventory inventory
+    - List<DiscountCampaign> activeDiscounts
+    - Checkout checkout
+    + void addOrUpdateItem(Item item)
+    + void updateInventory(String barcode, int count)
+    + void addDiscountCampaign(DiscountCampaign discount)
+    + void removeItem(String barcode)
+    + Item getItemByBarcode(String barcode)
+}
+
+class Order {
+    - String orderId
+    - List<OrderItem> items
+    - Map<OrderItem, DiscountCampaign> appliedDiscounts
+    - BigDecimal paymentAmount
+    + void addItem(OrderItem item)
+    + BigDecimal calculateSubtotal()
+    + BigDecimal calculateTotal()
+    + BigDecimal calculateChange()
+    + void applyDiscount(OrderItem item, DiscountCampaign discount)
+}
+
+class OrderItem {
+    - Item item
+    - int quantity
+    + BigDecimal calculatePrice()
+    + BigDecimal calculatePriceWithDiscount(DiscountCampaign newDiscount)
+}
+
+class Receipt {
+    - String receiptId
+    - Order order
+    - Date issueDate
+    + String printReceipt()
+}
+
+GroceryStoreSystem *-- Catalog
+GroceryStoreSystem *-- Inventory
+GroceryStoreSystem *-- Checkout
+GroceryStoreSystem *-- DiscountCampaign
+Checkout *-- Order
+Checkout *-- Receipt
+Order *-- OrderItem
+Order --> DiscountCampaign
+OrderItem --> Item
+DiscountCampaign --> DiscountCriteria
+DiscountCampaign --> DiscountCalculationStrategy
+@enduml

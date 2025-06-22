@@ -1,0 +1,53 @@
+@startuml
+skinparam monochrome true
+skinparam backgroundColor #FFFFFF
+skinparam classBackgroundColor #FFFFFF
+skinparam dpi 300
+
+class ElevatorSystem {
+    - List<ElevatorCar> elevators
+    - ElevatorDispatch dispatchController
+    + List<ElevatorStatus> getAllElevatorStatuses()
+    + requestElevator(int currentFloor, Direction direction)
+    + selectFloor(ElevatorCar car, int destinationFloor)
+}
+
+class ElevatorDispatch {
+    - DispatchingStrategy strategy
+    + dispatchElevatorCar(int floor, Direction direction, List<ElevatorCar> elevators)
+}
+
+interface DispatchingStrategy {
+    + ElevatorCar selectElevator(List<ElevatorCar> elevators, int floor, Direction direction)
+}
+
+class ElevatorCar {
+    - ElevatorStatus status
+    - Queue<Integer> targetFloors
++ ElevatorCar(int startingFloor)
++ ElevatorStatus getStatus()
++ void addFloorRequest(int floor)
++ boolean isIdle()
++ updateDirection(int targetFloor)
+}
+
+class ElevatorStatus {
+    - int currentFloor
+    - Direction currentDirection
+}
+
+enum Direction {
+    UP
+    DOWN
+    IDLE
+}
+
+ElevatorCar --> Direction
+ElevatorCar *-- ElevatorStatus
+ElevatorSystem *-- ElevatorCar
+ElevatorSystem *-- ElevatorDispatch
+ElevatorDispatch ..-> DispatchingStrategy
+DispatchingStrategy <|.. FirstComeFirstServeStrategy
+DispatchingStrategy <|.. ShortestSeekTimeFirstStrategy
+
+@enduml

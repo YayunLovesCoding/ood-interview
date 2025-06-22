@@ -1,0 +1,49 @@
+@startuml
+skinparam monochrome true
+skinparam backgroundColor #FFFFFF
+skinparam classBackgroundColor #FFFFFF
+skinparam dpi 300
+
+actor Customer
+actor "System"
+
+rectangle "ATM" {
+  usecase "Insert Card" as InsertCard
+  usecase "Enter PIN" as EnterPIN
+  usecase "Validate Card and PIN" as ValidateCardPIN
+  usecase "Select Transaction" as SelectTransaction
+  usecase "Select Account" as SelectAccount
+  usecase "Withdraw Cash" as WithdrawCash
+  usecase "Deposit Funds" as DepositFunds
+  usecase "Display Instructions" as DisplayInstructions
+  usecase "Continue or Exit" as ContinueOrExit
+  usecase "Eject Card" as EjectCard
+}
+
+Customer --> InsertCard
+Customer --> EnterPIN
+Customer --> SelectTransaction
+Customer --> SelectAccount
+Customer --> WithdrawCash
+Customer --> DepositFunds
+Customer --> ContinueOrExit
+Customer --> EjectCard
+
+System --> ValidateCardPIN
+System --> WithdrawCash
+System --> DepositFunds
+System --> DisplayInstructions
+
+InsertCard --> EnterPIN
+EnterPIN --> ValidateCardPIN
+ValidateCardPIN --> SelectTransaction
+SelectTransaction --> SelectAccount
+SelectAccount --> WithdrawCash
+SelectAccount --> DepositFunds
+WithdrawCash --> ContinueOrExit
+DepositFunds --> ContinueOrExit
+ContinueOrExit --> EjectCard
+
+DisplayInstructions --> InsertCard
+
+@enduml

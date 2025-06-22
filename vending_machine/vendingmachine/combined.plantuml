@@ -1,0 +1,95 @@
+@startuml
+skinparam monochrome true
+skinparam backgroundColor #FFFFFF
+skinparam classBackgroundColor #FFFFFF
+skinparam dpi 200
+
+class Restaurant {
+    - String name
+    - Menu menu
+    - Layout layout
+    - ReservationManager reservationManager
+
+    + LocalDateTime[] findAvailableTimeSlots(LocalDateTime rangeStart, LocalDateTime rangeEnd, int partySize)
+    + Reservation createScheduledReservation(String partyName, int partySize, LocalDateTime time)
+    + Reservation createWalkInReservation(String partyName, int partySize)
+    + void removeReservation(String partyName, int partySize, LocalDateTime reservationTime)
+    + void orderItem(Table table, MenuItem item, int quantity)
+    + void cancelItem(Table table, MenuItem item, int quantity)
+    + BigDecimal calculateTableBill(Table table)
+}
+
+class Menu {
+    - Map<String, MenuItem> menuItems
+    + void addItem(MenuItem item)
+}
+
+class MenuItem {
+    - String name
+    - String description
+    - BigDecimal price
+    - Category category
+}
+
+class Reservation {
+    - String partyName;
+    - int partySize;
+    - LocalDateTime time;
+    - Table assignedTable;
+}
+
+class ReservationManager {
+    - Set<Reservation> reservations
+    - Layout layout
+
+    + ReservationManager(Layout layout)
+LocalDateTime[] findAvailableTimeSlots(LocalDateTime rangeStart, LocalDateTime rangeEnd, int partySize)
+    + Reservation createReservation(String partyName, int partySize, LocalDateTime desiredTime)
+    + void removeReservation(String partyName, int partySize, LocalDateTime reservationTime)
+}
+
+class Table {
+    - int tableId
+    - int capacity
+    - Map<LocalDateTime, Reservation> reservations
+    - Map<MenuItem, List<OrderItem>> orderedItems
+
+    + Table(int tableId, int capacity)
+    + void addOrder(MenuItem item)
+    + void addReservation(Reservation reservation)
+    + void removeOrder(MenuItem item)
+    + void removeReservation(LocalDateTime reservationTime)
+    + boolean isAvailableAt(LocalDateTime reservationTime)
+    + BigDecimal calculateBillAmount()
+}
+
+class OrderItem {
+    - MenuItem item
+    - Status status
+
+    + OrderItem(MenuItem item)
+    + void sendToKitchen()
+    + void deliverToCustomer()
+    + void cancel()
+}
+
+class Layout {
+    - Map<Integer, Table> tablesById
+    - SortedMap<Integer, Set<Table>> tablesByCapacity
+
+    + Layout(int[] tableCapacities)
+    + Table findAvailableTable(int partySize, LocalDateTime reservationTime)
+}
+
+Restaurant *-- Menu
+Restaurant *-- Layout
+Restaurant *-- ReservationManager
+Menu *-- MenuItem
+ReservationManager *-- Reservation
+ReservationManager --> Layout
+Layout *-- Table
+Table *-- OrderItem
+OrderItem --> MenuItem
+Reservation --> Table
+
+@enduml

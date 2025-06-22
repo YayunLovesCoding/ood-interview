@@ -1,0 +1,44 @@
+plugins {
+    id 'java'
+}
+
+// Common configuration for all subprojects
+subprojects {
+    apply plugin: 'java'
+    
+    repositories {
+        mavenCentral()
+    }
+    
+    dependencies {
+        testImplementation 'org.junit.jupiter:junit-jupiter:5.11.0'
+        testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+    }
+    
+    java {
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
+    }
+    
+    tasks.named('test') {
+        useJUnitPlatform()
+        testLogging {
+            showStandardStreams = true
+        }
+        outputs.upToDateWhen { false }  // Always run tests, never cache
+    }
+}
+
+// Root level tasks
+
+task runAllTests {
+    description = 'Run tests for all projects'
+    group = 'verification'
+    dependsOn subprojects.collect { it.tasks.named('test') }
+}
+
+task buildAll {
+    description = 'Build all projects'
+    group = 'build'
+    dependsOn subprojects.collect { it.tasks.named('build') }
+}

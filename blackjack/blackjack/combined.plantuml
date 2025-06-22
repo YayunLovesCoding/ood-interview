@@ -1,0 +1,81 @@
+@startuml
+skinparam monochrome true
+skinparam backgroundColor #FFFFFF
+skinparam classBackgroundColor #FFFFFF
+skinparam dpi 300
+
+class RealPlayer {
+    - string name
+    - Hand hand 
+    - int bet 
+    - int balance 
+}
+
+class DealerPlayer {
+    - string name
+    - Hand hand
+}
+
+interface Player {
+    + void bet(int bet)
+    + void loseBet()
+    + void payout()
+    + returnBet()
+    + boolean isBust()
+    + Hand getHand()
+    + int getBalance()
+    + string getName()
+    + int getBet()
+}
+
+class Hand {
+    - List<Card> handCards
+    - SortedSet<Integer> possibleValues
+    + addCard(Card)
+    + List<Card> getCards()
+    + SortedSet<Integer> getPossibleValues()
+    + clear()
+    + boolean isBust()
+}
+
+ class Card {
+    + Rank rank
+    + Suit suit
+    + int[] getRankValues()
+  }
+
+class BlackJackGame {
+    - Deck deck
+    - List<Player> players
+    - Player dealer
+    - Player currentPlayer
+    - Map<Player, Action> playerTurnStatusMap
+    - GamePhase currentPhase
+    + Player getNextEligiblePlayer()
+    + startNewRound()
+    + dealInitialCards()
+    + bet(Player, int)
+    + hit(Player)
+    + stand(Player)
+}
+
+class Deck {
+    - int nextCardIndex
+    - List<Card> cards
+    + void shuffle()
+    + Card draw()
+    + int getRemainingCardCount()
+    + boolean isEmpty()
+    + void reset()
+}
+
+Player <|.. RealPlayer
+Player <|.. DealerPlayer
+BlackJackGame --> Player
+BlackJackGame *-- Deck
+RealPlayer *-- Hand
+DealerPlayer *-- Hand
+Hand --> Card
+Deck --> Card
+
+@enduml

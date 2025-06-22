@@ -1,0 +1,67 @@
+@startuml
+skinparam monochrome true
+skinparam backgroundColor #FFFFFF
+skinparam classBackgroundColor #FFFFFF
+skinparam dpi 300
+
+scale 1
+
+class FileSearch {
+    + search(File, FileSearchCriteria): List<File>
+}
+
+class FileSearchCriteria {
+    + isMatch(File): boolean
+}
+
+class File {
+    + extract(FileAttribute): Object
+    + getEntries(): Set<File>
+}
+
+enum FileAttribute {
+    IS_DIRECTORY
+    SIZE
+    OWNER
+    FILENAME
+}
+
+interface Predicate {
+    + isMatch(File): boolean
+}
+
+interface CompositePredicate extends Predicate {
+}
+
+class AndPredicate implements CompositePredicate {
+    + isMatch(File): boolean
+}
+
+class OrPredicate implements CompositePredicate {
+    + isMatch(File): boolean
+}
+
+class NotPredicate implements CompositePredicate {
+    + isMatch(File): boolean
+}
+
+class SimplePredicate implements Predicate {
+    + isMatch(File): boolean
+}
+
+interface ComparisonOperator<T> {
+    + {abstract} isMatch(T, T): boolean
+}
+
+
+FileSearchCriteria *-- Predicate
+FileSearch --> FileSearchCriteria: evaluates
+FileSearch --> File: traverses
+
+SimplePredicate *-- FileAttribute
+SimplePredicate *-- ComparisonOperator
+
+File o-- "0..*" File
+
+
+@enduml

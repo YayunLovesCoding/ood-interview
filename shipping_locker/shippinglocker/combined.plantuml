@@ -1,0 +1,98 @@
+skinparam monochrome true
+skinparam backgroundColor #FFFFFF
+skinparam classBackgroundColor #FFFFFF
+skinparam dpi 150
+
+enum LockerSize {
+    sizeName
+    dailyCharge
+    width
+    height
+    depth
+}
+
+enum ShippingStatus {
+    CREATED
+    PENDING
+    IN_LOCKER
+    RETRIEVED
+    EXPIRED
+}
+
+interface ShippingPackage {
+    + getOrderId(): String
+    + getUser(): Account
+    + getWidth(): BigDecimal
+    + getHeight(): BigDecimal
+    + getDepth(): BigDecimal
+    + getStatus(): ShippingStatus
+    + updateShippingStatus(status: ShippingStatus): void
+    + getLockerSize(): LockerSize
+}
+
+
+class Locker {
+    - LockerSize size
+    - ShippingPackage currentPackage
+    - Date assignmentDate
+    - String accessCode
+    + Locker(LockerSize size)
+    + void assignPackage(ShippingPackage pkg, Date date)
+    + void releaseLocker()
+    + BigDecimal calculateStorageCharges()
+    + boolean isAvailable()
+    + boolean checkAccessCode(String code)
+}
+
+class Site {
+    - Map<LockerSize, Set<Locker>> lockers
+    + Locker findAvailableLocker(LockerSize size)
+    + Locker placePackage(ShippingPackage pkg, Date date)
+}
+
+class BasicShippingPackage {
+    - String orderId
+    - Account user
+    - double width
+    - double height
+    - double depth
+    - ShippingStatus status
+}
+
+class Account {
+    - String accountId
+    - String ownerName
+    - AccountLockerPolicy lockerPolicy
+    - BigDecimal usageCharges
+
+    + boolean addUsageCharge(BigDecimal amount)
+}
+
+class AccountLockerPolicy {
+    - int freePeriodDays
+    - int maximumPeriodDays
+}
+
+interface NotificationInterface {
+    + void sendNotification(String message, Account account)
+}
+
+class LockerManager {
+    - Site site
+    - NotificationInterface notificationService
+    - Map<String, Account> accounts
+    - Map<String, Locker> accessCodeMap
+    + Locker assignPackage(ShippingPackage pkg, Date date)
+    + Locker pickUpPackage(String accessCode)
+}
+
+LockerManager --> Site
+LockerManager --> NotificationInterface
+LockerManager --> Locker
+Locker *-- LockerSize
+Locker --> ShippingPackage
+Site *-- Locker
+ShippingPackage <|.. BasicShippingPackage
+BasicShippingPackage *-- Account
+BasicShippingPackage *-- ShippingStatus
+Account *-- AccountLockerPolicy

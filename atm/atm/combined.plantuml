@@ -1,0 +1,43 @@
+@startuml
+skinparam monochrome true
+skinparam backgroundColor #FFFFFF
+skinparam classBackgroundColor #FFFFFF
+skinparam dpi 300
+
+class ATMMachine {
+}
+interface ATMState {
+}
+interface Display {
+}
+interface CashDispenser {
+}
+interface DepositBox {
+}
+interface CardProcessor {
+}
+interface Keypad {
+}
+interface BankInterface {
+}
+class Bank implements BankInterface {
+}
+interface Transaction {
+}
+class Account {
+}
+
+ATMMachine *-- CardProcessor
+ATMMachine *-- Keypad
+ATMMachine *-- DepositBox
+ATMMachine *-- CashDispenser
+ATMMachine *-- Display
+ATMMachine --> BankInterface
+ATMMachine --> ATMState
+
+Bank *-- Account
+Bank *-- Transaction
+
+Transaction *-- Account
+
+@enduml
